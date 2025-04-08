@@ -1,0 +1,164 @@
+/* Main Styles */
+body {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #1a1f2b, #2c3e50);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--bs-light);
+}
+
+.card {
+    background-color: var(--bs-dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.btn-xl {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* Thumbnail Styling */
+.thumbnail-placeholder {
+    width: 120px;
+    height: 90px;
+    border: 2px solid var(--bs-gray-600);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.empty-thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: var(--bs-gray-800);
+    color: var(--bs-gray-500);
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Photo Strip Styling */
+.photo-strip {
+    max-width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    background-color: var(--bs-gray-900);
+    padding: 10px;
+}
+
+.photo-strip-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.strip-photo {
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+.strip-photo img {
+    width: 100%;
+    display: block;
+}
+
+/* Template Styles */
+.classic-template {
+    background-color: white;
+    padding: 20px;
+    border: 5px solid black;
+}
+
+.modern-template {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+.vintage-template {
+    background-color: #f9e4c3;
+    padding: 20px;
+    border: 10px solid #8b4513;
+    box-shadow: inset 0 0 20px rgba(139, 69, 19, 0.5);
+}
+
+/* Camera Container */
+.camera-container {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    background-color: var(--bs-dark);
+}
+
+#camera {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Admin Styling */
+.admin-header {
+    background-color: var(--bs-dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+}
+
+.admin-sidebar {
+    background-color: var(--bs-dark);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    height: 100%;
+    padding: 2rem 1rem;
+}
+
+.admin-card {
+    height: 100%;
+}
+
+.admin-card .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-card .card-text {
+    flex-grow: 1;
+}
+
+/* Frame display in admin */
+.frame-thumbnail {
+    max-height: 200px;
+    object-fit: contain;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Print job status */
+.print-job-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .camera-container {
+        max-height: 60vh;
+    }
+    
+    .btn-xl {
+        padding: 0.5rem 1rem;
+        font-size: 1.25rem;
+    }
+}

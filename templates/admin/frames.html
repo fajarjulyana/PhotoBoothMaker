@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Frames - Photo Booth Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Frames</h1>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">Add New Frame</h4>
+        </div>
+        <div class="card-body">
+            <form action="{{ url_for('add_frame') }}" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Frame Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="frame_file" class="form-label">Frame Image (PNG with transparency)</label>
+                            <input type="file" class="form-control" id="frame_file" name="frame_file" required accept="image/png">
+                            <div class="form-text">Recommended: PNG file with transparent background</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h5>Frame Settings</h5>
+                        <div class="mb-3">
+                            <label for="offset_x" class="form-label">Horizontal Offset (pixels)</label>
+                            <input type="number" class="form-control" id="offset_x" name="offset_x" value="0">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="offset_y" class="form-label">Vertical Offset (pixels)</label>
+                            <input type="number" class="form-control" id="offset_y" name="offset_y" value="0">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="scale" class="form-label">Scale (0.1 - 2.0)</label>
+                            <input type="number" class="form-control" id="scale" name="scale" value="1.0" min="0.1" max="2.0" step="0.1">
+                        </div>
+                        
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="1" id="is_active" name="is_active" checked>
+                            <label class="form-check-label" for="is_active">
+                                Active (available for users)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">Add Frame</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Available Frames</h4>
+        </div>
+        <div class="card-body">
+            {% if frames %}
+                <div class="row">
+                    {% for frame in frames %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                {% if frame.thumbnail_path %}
+                                    <img src="{{ url_for('static', filename=frame.thumbnail_path) }}" class="card-img-top" alt="{{ frame.name }}">
+                                {% else %}
+                                    <img src="{{ url_for('static', filename=frame.file_path) }}" class="card-img-top" alt="{{ frame.name }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ frame.name }}</h5>
+                                    <p class="card-text">{{ frame.description }}</p>
+                                    <p>
+                                        <span class="badge {% if frame.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                            {% if frame.is_active %}Active{% else %}Inactive{% endif %}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="{{ url_for('edit_frame', frame_id=frame.id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal{{ frame.id }}">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delete Modal for this frame -->
+                        <div class="modal fade" id="deleteModal{{ frame.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ frame.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="deleteModalLabel{{ frame.id }}">Confirm Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete the frame "{{ frame.name }}"? This cannot be undone.
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <form action="{{ url_for('delete_frame', frame_id=frame.id) }}" method="POST">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">No frames have been added yet.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

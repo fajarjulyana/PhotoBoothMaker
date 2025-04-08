@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin Dashboard - Photo Booth{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Admin Dashboard</h1>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Frames</h5>
+                    <p class="card-text">Manage photo frames and overlays</p>
+                    <a href="{{ url_for('admin_frames') }}" class="btn btn-primary">Manage Frames</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Printers</h5>
+                    <p class="card-text">Configure printing options</p>
+                    <a href="{{ url_for('admin_printers') }}" class="btn btn-primary">Manage Printers</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Print Jobs</h5>
+                    <p class="card-text">View and manage print jobs</p>
+                    <a href="{{ url_for('admin_print_jobs') }}" class="btn btn-primary">View Print Jobs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+    </div>
+</div>
+{% endblock %}

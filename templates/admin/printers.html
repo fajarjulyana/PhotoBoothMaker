@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Printers - Photo Booth Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Manage Printers</h1>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Available Printers</h4>
+        </div>
+        <div class="card-body">
+            {% if printers %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Device URI</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for name, printer in printers.items() %}
+                            <tr>
+                                <td>{{ name }}</td>
+                                <td>
+                                    {% if printer.printer_state == 3 %}
+                                        <span class="badge bg-success">Ready</span>
+                                    {% elif printer.printer_state == 4 %}
+                                        <span class="badge bg-warning">Processing</span>
+                                    {% elif printer.printer_state == 5 %}
+                                        <span class="badge bg-danger">Stopped</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ printer.device_uri }}</td>
+                                <td>{{ printer.printer_info }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning">No printers found. Please configure CUPS on this server.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

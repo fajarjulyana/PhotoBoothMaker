@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Frame - Photo Booth Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Edit Frame</h1>
+        <a href="{{ url_for('admin_frames') }}" class="btn btn-secondary">Back to Frames</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Frame Details</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('edit_frame', frame_id=frame.id) }}" method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Frame Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ frame.name }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3">{{ frame.description }}</textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="frame_file" class="form-label">Replace Frame Image (PNG with transparency)</label>
+                                    <input type="file" class="form-control" id="frame_file" name="frame_file" accept="image/png">
+                                    <div class="form-text">Leave empty to keep the current image</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Frame Settings</h5>
+                                <div class="mb-3">
+                                    <label for="offset_x" class="form-label">Horizontal Offset (pixels)</label>
+                                    <input type="number" class="form-control" id="offset_x" name="offset_x" value="{{ frame.settings.offset_x|default(0) }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="offset_y" class="form-label">Vertical Offset (pixels)</label>
+                                    <input type="number" class="form-control" id="offset_y" name="offset_y" value="{{ frame.settings.offset_y|default(0) }}">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="scale" class="form-label">Scale (0.1 - 2.0)</label>
+                                    <input type="number" class="form-control" id="scale" name="scale" value="{{ frame.settings.scale|default(1.0) }}" min="0.1" max="2.0" step="0.1">
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" value="1" id="is_active" name="is_active" {% if frame.is_active %}checked{% endif %}>
+                                    <label class="form-check-label" for="is_active">
+                                        Active (available for users)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Current Frame</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if frame.thumbnail_path %}
+                        <img src="{{ url_for('static', filename=frame.thumbnail_path) }}" class="img-fluid mb-3" alt="{{ frame.name }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename=frame.file_path) }}" class="img-fluid mb-3" alt="{{ frame.name }}">
+                    {% endif %}
+                    <p class="mb-0">Created: {{ frame.created_at.strftime('%Y-%m-%d') }}</p>
+                    <p>Last Updated: {{ frame.updated_at.strftime('%Y-%m-%d') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

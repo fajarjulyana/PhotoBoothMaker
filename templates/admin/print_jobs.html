@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block title %}Print Jobs - Photo Booth Admin{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Print Jobs</h1>
+        <a href="{{ url_for('admin') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">Print Job History</h4>
+        </div>
+        <div class="card-body">
+            {% if print_jobs %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Printer</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Completed</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in print_jobs %}
+                            <tr>
+                                <td>{{ job.id }}</td>
+                                <td>{{ job.printer_name }}</td>
+                                <td>
+                                    {% if job.status == 'pending' %}
+                                        <span class="badge bg-secondary">Pending</span>
+                                    {% elif job.status == 'printing' %}
+                                        <span class="badge bg-primary">Printing</span>
+                                    {% elif job.status == 'completed' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif job.status == 'failed' %}
+                                        <span class="badge bg-danger">Failed</span>
+                                    {% elif job.status == 'canceled' %}
+                                        <span class="badge bg-warning">Canceled</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Unknown</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ job.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>{{ job.completed_at.strftime('%Y-%m-%d %H:%M:%S') if job.completed_at else '-' }}</td>
+                                <td>
+                                    {% if job.status == 'printing' %}
+                                        <form action="{{ url_for('cancel_print_job', job_id=job.id) }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-warning">Cancel</button>
+                                        </form>
+                                    {% endif %}
+                                    
+                                    {% if job.error_message %}
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#errorModal{{ job.id }}">
+                                            Error Details
+                                        </button>
+                                        
+                                        <!-- Error Modal -->
+                                        <div class="modal fade" id="errorModal{{ job.id }}" tabindex="-1" aria-labelledby="errorModalLabel{{ job.id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="errorModalLabel{{ job.id }}">Error Details</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <pre>{{ job.error_message }}</pre>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">No print jobs found.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
